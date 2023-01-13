@@ -5,7 +5,7 @@ if .schemas | index("urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101") 
 		. 
 end
 |
-if ."urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101".circulationInfo.borrowerCategory == "UQTR - Communauté uni. BUQ"
+if ."urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101".circulationInfo.borrowerCategory == "UQTR 2 - Communauté uni. BUQ"
 	then
 		."urn:mace:oclc.org:eidm:schema:persona:persona:20180305".oclcExpirationDate 
 			= "2039-06-31T00:00:00Z"
