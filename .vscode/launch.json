@@ -10,7 +10,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["<", "${workspaceFolder}/onepatron.txt"],
+            // "args": ["<", "${workspaceFolder}/onepatron.txt"],
+            "args": ["<", "${workspaceFolder}/patrons.txt"],
             "justMyCode": true
         }
     ]

@@ -8,9 +8,9 @@ end
 if ."urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101".circulationInfo.borrowerCategory == "UQTR - Communauté uni. BUQ"
 	then
 		."urn:mace:oclc.org:eidm:schema:persona:persona:20180305".oclcExpirationDate 
-			= "2039-06-31T00:00:00Z"
+			= "2039-06-29T00:00:00Z"
 		| ."urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101".illInfo.illPatronType 
-			= "Employés2" 
+			= "Employés" 
 	else
 		."urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101".illInfo.illPatronType =
 			(."urn:mace:oclc.org:eidm:schema:persona:additionalinfo:20180501".oclcKeyValuePairs[] | select(.key = "customdata1") | .value)

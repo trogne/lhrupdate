@@ -110,6 +110,8 @@ def updatePatron(userId, moddedRecord, etag, authtoken):
 
 with open('mod.jq', 'r') as file:
     MODJQ = file.read()
+# MODJQ = '."urn:mace:oclc.org:eidm:schema:persona:persona:20180305".oclcExpirationDate  = "2039-06-29T00:00:00Z"'
+# MODJQ = "."
 
 BASEURL = "https://%s.share.worldcat.org/idaas/scim/v2" %INSTID
 
