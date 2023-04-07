@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import json
 from base64 import b64encode
 from os.path import exists
@@ -24,10 +23,9 @@ combo       = WSKEY+':'+SECRET
 auth        = combo.encode()
 authenc     = b64encode(auth)
 authheader  = { 'Authorization' : 'Basic %s' %  authenc.decode() }
-url         = "https://oauth.oclc.org/token?grant_type=client_credentials&scope=SCIM"
+url         = "https://oauth.oclc.org/token?grant_type=client_credentials&scope=WMS_COLLECTION_MANAGEMENT"
 
 def getToken():
-
     try:
         r = requests.post(url, headers=authheader)
         r.raise_for_status()
@@ -36,45 +34,33 @@ def getToken():
 
     return r.json()['access_token']
 
-
-def searchPatron(patronBarcode, authtoken):
-
-    search  = '''
-        {
-            "schemas": [ "urn:ietf:params:scim:api:messages:2.0:SearchRequest" ]
-            , "filter": "External_ID eq \\"%s\\"" 
-        }
-        ''' % patronBarcode
-
-    searchheaders = { 
+def readBib(authtoken):
+    readheaders = {
         'Authorization' : 'Bearer %s' % authtoken
-        , 'Content-Type' : 'application/scim+json'
-        , 'Accept' : 'application/scim+json' 
+        , 'Accept' : 'application/atom+json' 
     }
 
     try:
-        s = requests.post(SEARCHURL, headers=searchheaders, data=search)
-        s.raise_for_status()
+        read = requests.get("https://circ.sd00.worldcat.org/LHR?q=oclc%3A"+bibnum, headers=readheaders)
+        read.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        if s.status_code == 401:
+        if read.status_code == 401:
             raise ValueError('Token expired')
         else:
             SystemExit(err)
+    
+    return read.json()['entries']
 
-    return pyjq.first('.Resources[0].id', s.json())
 
-
-def readPatron(userId, authtoken):
-
-    readurl = BASEURL + '/Users/%s' % userId
-
+def readLhr(authtoken):
     readheaders = {
         'Authorization' : 'Bearer %s' % authtoken
-        , 'Accept' : 'application/scim+json' 
+        , 'Accept' : 'application/atom+json' 
     }
 
     try:
-        read = requests.get(readurl, headers=readheaders)
+        # read = requests.get(APIURL + lhrnum, headers=readheaders)
+        read = requests.get(lhrnum, headers=readheaders)
         read.raise_for_status()
     except requests.exceptions.HTTPError as err:
         if read.status_code == 401:
@@ -84,19 +70,17 @@ def readPatron(userId, authtoken):
         
     return read
 
-def updatePatron(userId, moddedRecord, etag, authtoken):
-
-    updateUrl = BASEURL + '/Users/%s' % userId
-
+def updateLhr(lhrnum, moddedRecord, etag, authtoken):
     updateheaders =  {
         'Authorization' : 'Bearer %s' % authtoken
         , 'Accept' : 'application/scim+json' 
-        , 'Content-Type' : 'application/scim+json' 
+        , 'Content-Type' : 'application/atom+json' 
         , 'If-Match' : etag
     }
 
     try:
-        update = requests.put(updateUrl, headers=updateheaders, data=moddedRecord)
+        # update = requests.put(APIURL + lhrnum, headers=updateheaders, data=moddedRecord)
+        update = requests.put(lhrnum, headers=updateheaders, data=moddedRecord)
         update.raise_for_status()
     except requests.exceptions.HTTPError as err:
         if update.status_code == 401:
@@ -106,61 +90,68 @@ def updatePatron(userId, moddedRecord, etag, authtoken):
 
     return update
 
-# Read mod.jq for modifier
-
-with open('mod.jq', 'r') as file:
-    MODJQ = file.read()
-# MODJQ = '."urn:mace:oclc.org:eidm:schema:persona:persona:20180305".oclcExpirationDate  = "2039-06-29T00:00:00Z"'
+## Read mod.jq for modifier
+# with open('mod.jq', 'r') as file:
+#     MODJQ = file.read()
 # MODJQ = "."
+MODJQ = '.content.shelvingDesignation.information = "miko"'
 
-BASEURL = "https://%s.share.worldcat.org/idaas/scim/v2" %INSTID
-
-SEARCHURL = BASEURL + '/Users/.search'
+# APIURL = "https://circ.sd00.worldcat.org/LHR/"
 
 # old token to test refresh
 # TOKEN = "tk_vziB66LUGsTrc0MRpml5yo4VYoKWUPTvUXfj"
-
 TOKEN = getToken()
 
-
-# LOOP
-# take identifiers from stdin
-
+# loop over bibs
 for line in sys.stdin:
-    barcode = line.strip()
-
-    # find patron's PPID using barcode
+    bibnum = line.strip()
     try:
-        ppid =  searchPatron(barcode, TOKEN)
+        lhrs = readBib(TOKEN)
+        with open('lhrs.txt', 'w') as file:
+            for lhr in lhrs:
+                file.write(lhr['content']['id']+'\n')
     except ValueError:
-        # token has expired, get a fresh token and redo search
         print('getting new token')
         TOKEN = getToken()
-        ppid =  searchPatron(barcode, TOKEN)
+        lhr = readBib(TOKEN)
+
+
+# loop over lhrs
+# for line in sys.stdin:
+with open('lhrs.txt', 'r') as f:
+    lhrs = f.read().splitlines()
+
+for line in lhrs:
+    lhrnum = line.strip()
+    
+    if lhrnum == "":
+        continue
 
     try:
-        patron = readPatron(ppid, TOKEN)
+        # lhr = readLhr(lhrid, TOKEN)
+        # lhr = readLhr(lhrnum, TOKEN)
+        lhr = readLhr(TOKEN) #car global
         # for debugging
-        patronJson = json.dumps(patron.json())
+        lhrJson = json.dumps(lhr.json())
     except ValueError:
         # token has expired, get a fresh token and redo read
         print('getting new token')
         TOKEN = getToken()
-        patron = readPatron(ppid, TOKEN)
+        lhr = readLhr(TOKEN)
 
     # Extract ETag for safe update
-    ETag = patron.headers['ETag']
+    ETag = lhr.headers['ETag']
 
     # Create modded record with MODJQ
-    modded = json.dumps(pyjq.one(MODJQ, patron.json()))
+    modded = json.dumps(pyjq.one(MODJQ, lhr.json()))
 
-    # Update patron record
+    # Update Lhr record
     try:
-        update = updatePatron(ppid, modded, ETag, TOKEN)
+        update = updateLhr(lhrnum, modded, ETag, TOKEN)
         # print simple confirmation
-        print(str(barcode) + "\t" + str(update.status_code))
+        print(str(lhrnum) + "\t" + str(update.status_code))
     except ValueError:
         # token has expired, get a fresh token and redo update
         print('update getting new token')
         TOKEN = getToken()
-        update = updatePatron(ppid, modded, ETag, TOKEN)
+        update = updateLhr(lhrnum, modded, ETag, TOKEN)

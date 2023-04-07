@@ -11,7 +11,7 @@ end
 if ."urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101".circulationInfo.borrowerCategory == "UQTR - Communauté uni. BUQ"
 	then
 		."urn:mace:oclc.org:eidm:schema:persona:persona:20180305".oclcExpirationDate 
-			= "2039-06-29T00:00:00Z"
+			= "2039-05-29T00:00:00Z"
 		| ."urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101".illInfo.illPatronType 
 			= "Employés" 
 	else
@@ -23,8 +23,8 @@ end
 	= ."urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101".circulationInfo.barcode 
 # set ILL 'isBlocked' to true and ILL 'isApproved' to false
 | ."urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101".illInfo.isBlocked 
-	= true 
-| ."urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101".illInfo.isApproved
 	= false
+| ."urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101".illInfo.isApproved
+	= true
 
 

@@ -1,0 +1,52 @@
+{
+  "id": "urn:oclc:collectionmanagement/LHR/75437",
+  "title": "Copies",
+  "updated": "2023-04-07T16:09:01.862Z",
+  "entries": [
+    {
+      "title": "",
+      "content": {
+        "institution": "http://www.worldcat.org/webservices/registry/content/Institutions/75437",
+        "bib": "/bibs/52472322",
+        "lastUpdateDate": "2023-04-07T02:43:49.400Z",
+        "recordType": "SINGLE_PART",
+        "receiptStatus": "UNKNOWN",
+        "copyNumber": "1",
+        "note": [],
+        "holdingLocation": "U3QA",
+        "shelvingLocation": "- Coll. g\xc3\xa9n\xc3\xa9rale - Pr\xc3\xaat r\xc3\xa9gulier",
+        "previousShelvingLocation": [],
+        "shelvingDesignation": { "prefix": [], "information": "miko", "itemPart": [], "suffix": [], "scheme": "UNKNOWN" },
+        "holding": [{ "pieceDesignation": null, "note": [{ "value": "test_pf", "type": "PUBLIC" }], "useRestriction": [], "cost": [], "temporaryLocation": [], "caption": null, "category": "BASIC" }],
+        "id": "https://circ.sd00.worldcat.org/LHR/408225021?inst=75437"
+      },
+      "updated": "2023-04-07T02:43:49.400Z",
+      "links": [{ "href": "https://circ.sd00.worldcat.org/LHR/408225021?inst=75437" }]
+    },
+    {
+      "title": "",
+      "content": {
+        "institution": "http://www.worldcat.org/webservices/registry/content/Institutions/75437",
+        "bib": "/bibs/52472322",
+        "lastUpdateDate": "2023-04-07T16:08:36.200Z",
+        "recordType": "SINGLE_PART",
+        "receiptStatus": "UNKNOWN",
+        "copyNumber": "2",
+        "note": [],
+        "holdingLocation": "U3QD",
+        "shelvingLocation": "- Coll. g\xc3\xa9n\xc3\xa9rale - Pr\xc3\xaat r\xc3\xa9gulier",
+        "previousShelvingLocation": [],
+        "shelvingDesignation": { "prefix": [], "information": "miko2", "itemPart": [], "suffix": [], "scheme": "UNKNOWN" },
+        "holding": [{ "pieceDesignation": null, "note": [{ "value": "test_pf", "type": "PUBLIC" }], "useRestriction": [], "cost": [], "temporaryLocation": [], "caption": null, "category": "BASIC" }],
+        "id": "https://circ.sd00.worldcat.org/LHR/408389243?inst=75437"
+      },
+      "updated": "2023-04-07T16:08:36.200Z",
+      "links": [{ "href": "https://circ.sd00.worldcat.org/LHR/408389243?inst=75437" }]
+    }
+  ],
+  "extensions": [
+    { "name": "os:totalResults", "attributes": { "xmlns:os": "http://a9.com/-/spec/opensearch/1.1/" }, "children": ["2"] },
+    { "name": "os:startIndex", "attributes": { "xmlns:os": "http://a9.com/-/spec/opensearch/1.1/" }, "children": ["1"] },
+    { "name": "os:itemsPerPage", "attributes": { "xmlns:os": "http://a9.com/-/spec/opensearch/1.1/" }, "children": ["10"] }
+  ]
+}
